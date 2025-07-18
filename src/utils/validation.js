@@ -1,4 +1,12 @@
 const validator = require("validator");
+const { validate } = require("../models/user");
+const User = require("../models/user");
+const profileEditData = (req)=>{
+    const allowEdits=["firstName","lastName","age","gender","about","skills","photoUrl"];
+    const iseditAllowed = Object.keys(req.body).every(field=>allowEdits.includes(field)) //object.keys gives keys from the req i.e., age,gender,about etc., checking from req.body for every field coming from req.body 
+    // if it is included in allowedits or not
+ return iseditAllowed;
+}
 
 const validateSignUpData = (req)=>{
 
@@ -20,4 +28,5 @@ const validateSignUpData = (req)=>{
     }
 }
 
-module.exports = {validateSignUpData};
+
+module.exports = {validateSignUpData,profileEditData};
