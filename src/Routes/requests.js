@@ -36,9 +36,38 @@ try{
     const data = await connectionRequest.save();
     res.json({message:req.user.firstName+" "+req.user.lastName+" "+status+" in "+isUserexists.lastName,data});
 }
+
 catch(err){
     res.status(400).send(err.message);
 }
+})
+
+
+connectionRequestRouter.post("/request/review/:status/:requestID",userAuth,async(req,res)=>{
+    try{
+        const {status,requestID} = req.params;
+        const loggedInUser = req.user;
+        const allowedStatus = ["accepted","rejected"];
+        if(!allowedStatus.includes(status)){
+            return res.status(400).json({messsage:"status not allowed"}+status);
+        }
+        const connectionRequest = await ConnectionRequest.findOne({
+            _id: requestID,
+            toUserId: loggedInUser._id,
+            status: "interested"
+        })
+        if(!connectionRequest){
+           return res.status(404).json({message:"Request not found"});
+        }
+        connectionRequest.status = status //here the status is coming from api which is either can be accepted or rejected and we already validated the status to be interested to perform this action
+        //now we update the status in DB
+        const data = await connectionRequest.save();
+
+        res.json({message:"Connection request:"+status,data});
+    }  
+    catch(err){
+        res.status(400).send(err.message);
+    }
 })
 
 module.exports = connectionRequestRouter;

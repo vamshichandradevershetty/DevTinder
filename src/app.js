@@ -8,11 +8,12 @@ app.use(cookieParser());
 const authRouter = require("./Routes/auth");
 const profileRouter = require("./Routes/profile");
 const connectionRequestRouter = require("./Routes/requests");
+const userRouter = require("./Routes/user");
 
 app.use("/",authRouter); // we can have app.use where it checks /authRouter and in goes to authRouter if signup or login is called 
 app.use("/",profileRouter);//if there is a getprofile call express first checks that path is authRouter if it is valid it executes that else it comes for next path i.e., profileRouter
 app.use("/",connectionRequestRouter);
-
+app.use("/",userRouter);
 connectDB()
     .then(()=>{
         console.log("Connected to Database")
