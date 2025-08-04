@@ -1,5 +1,6 @@
 
 const express = require("express");
+const cors = require("cors")
 const connectDB = require("./config/database");
 const app = express(); //creating new express js application or server or instance of the application
 const cookieParser = require("cookie-parser");
@@ -10,6 +11,9 @@ const profileRouter = require("./Routes/profile");
 const connectionRequestRouter = require("./Routes/requests");
 const userRouter = require("./Routes/user");
 
+app.use(cors({
+    origin:"http://localhost:5173",
+    credentials:true}));
 app.use("/",authRouter); // we can have app.use where it checks /authRouter and in goes to authRouter if signup or login is called 
 app.use("/",profileRouter);//if there is a getprofile call express first checks that path is authRouter if it is valid it executes that else it comes for next path i.e., profileRouter
 app.use("/",connectionRequestRouter);

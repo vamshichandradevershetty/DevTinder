@@ -13,8 +13,11 @@ authRouter.post("/signup", async(req,res)=>{ //same as app.post
     const {firstName,lastName,emailID,password} = req.body;
     const passwordhash = await bcrypt.hash(password,10);
     const user = new User({firstName,lastName,emailID,password:passwordhash}) //creating a new instance of User model
-    await user.save();
-    res.send("user added succesfully");
+    const savedUser = await user.save();
+    const token = await savedUser.getJWT();
+    //console.log(token);
+    res.cookie("token",token,{expires: new Date(Date.now()+6*3600000)});
+    res.json({message:"user added succesfully",data:savedUser});
     }catch(err)
     {
         res.status(400).send("ERROR:"+err.message);
@@ -30,15 +33,15 @@ authRouter.post("/login",async(req,res)=>{
         
         const user = await User.findOne({emailID});
         if(!user){
-            throw new Error("Invalid Credentials");
+            return res.status(400).send({error:"Invalid Credentials"});
         }
         //console.log(user);
         const isPasswordValid = await user.validatePassword(password);
         if(isPasswordValid){
             const token = await user.getJWT();
             //console.log(token);
-            res.cookie("token",token,{expires: new Date(Date.now()+1*3600000)});
-            res.send("User signin successfull");
+            res.cookie("token",token,{expires: new Date(Date.now()+6*3600000)});
+            res.send(user);
         }
         else{
             throw new Error("Invalid Credentials");
@@ -46,7 +49,7 @@ authRouter.post("/login",async(req,res)=>{
     }
     catch(err)
     {
-        res.status(400).send("ERROR:"+err.message);
+       return res.status(400).send({error:err.message});
     }
 })
 
