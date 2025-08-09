@@ -4,6 +4,7 @@ const ConnectionRequest = require("../models/connectionRequests");
 const userRouter = express.Router();
 const User = require("../models/user");
 
+
 //getting all the pending connection requests for the loggedin user
 userRouter.get("/user/requests/received",userAuth,async(req,res)=>{
     try{
@@ -78,7 +79,7 @@ try{
     ]
     }).select("firstName lastName gender about age _id").skip(skip).limit(limit);
 
-    res.send(users);
+    res.json(users);
 
 
 }

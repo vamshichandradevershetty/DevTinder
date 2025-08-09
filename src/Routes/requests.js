@@ -4,6 +4,9 @@ const User = require("../models/user");
 const {userAuth} = require("../middleware/authmiddleware");
 const ConnectionRequest = require("../models/connectionRequests");
 
+const sendEmail = require("../utils/sendEmail");
+
+
 //send connection request
 connectionRequestRouter.post("/request/send/:status/:toUserId",userAuth, async (req,res)=>{
 try{
@@ -34,6 +37,8 @@ try{
     const connectionRequest = new ConnectionRequest({fromUserId,toUserId,status})
 
     const data = await connectionRequest.save();
+    const emailres = await sendEmail.run();
+    console.log(emailres);
     res.json({message:req.user.firstName+" "+req.user.lastName+" "+status+" in "+isUserexists.lastName,data});
 }
 

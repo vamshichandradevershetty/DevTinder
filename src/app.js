@@ -1,4 +1,4 @@
-
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors")
 const connectDB = require("./config/database");
@@ -21,8 +21,9 @@ app.use("/",userRouter);
 connectDB()
     .then(()=>{
         console.log("Connected to Database")
-        app.listen(3000,()=>{
-        console.log("server listens port 3000");
+        console.log(process.env.PORT);
+        app.listen(process.env.PORT || 7777,()=>{
+        console.log("server listens port 7777");
         }); //we can also have callback function once server is started
     }).catch((err)=>{
         console.error("Database connection failed",err);
