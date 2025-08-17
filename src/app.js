@@ -10,6 +10,13 @@ const authRouter = require("./Routes/auth");
 const profileRouter = require("./Routes/profile");
 const connectionRequestRouter = require("./Routes/requests");
 const userRouter = require("./Routes/user");
+const paymentRouter = require("./Routes/payment");
+const http = require("http");
+const initializeSocket = require("./utils/socket");
+const { chatRouter } = require("./Routes/chat");
+const server = http.createServer(app);
+initializeSocket(server);
+require("./utils/cronJob");
 
 app.use(cors({
     origin:"http://localhost:5173",
@@ -18,11 +25,13 @@ app.use("/",authRouter); // we can have app.use where it checks /authRouter and 
 app.use("/",profileRouter);//if there is a getprofile call express first checks that path is authRouter if it is valid it executes that else it comes for next path i.e., profileRouter
 app.use("/",connectionRequestRouter);
 app.use("/",userRouter);
+app.use("/",paymentRouter);
+app.use("/",chatRouter);
 connectDB()
     .then(()=>{
         console.log("Connected to Database")
         console.log(process.env.PORT);
-        app.listen(process.env.PORT || 7777,()=>{
+        server.listen(process.env.PORT || 7777,()=>{
         console.log("server listens port 7777");
         }); //we can also have callback function once server is started
     }).catch((err)=>{

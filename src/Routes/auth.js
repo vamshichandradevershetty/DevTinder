@@ -29,13 +29,13 @@ authRouter.post("/signup", async(req,res)=>{ //same as app.post
 authRouter.post("/login",async(req,res)=>{
     try{
 
-        const {emailID,password} = req.body;
-        
-        const user = await User.findOne({emailID});
+    const {emailID,password} = req.body;
+        const user = await User.findOne({emailID:emailID.trim().toLowerCase()});
+        //console.log(user);
         if(!user){
             return res.status(400).send({error:"Invalid Credentials"});
         }
-        //console.log(user);
+        
         const isPasswordValid = await user.validatePassword(password);
         if(isPasswordValid){
             const token = await user.getJWT();
